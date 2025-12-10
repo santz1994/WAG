@@ -53,6 +53,7 @@
     "qrcode-terminal": "^0.12.0",
     "sharp": "^0.34.5",
     "sss-wasm": "^0.4.0",
+    "steggy": "^2.0.1",
     "tls": "^0.0.1",
     "web3-utils": "^4.3.3",
     "whatsapp-web.js": "^1.26.1",
