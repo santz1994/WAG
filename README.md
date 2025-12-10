@@ -6,84 +6,48 @@
 
 ## 🚀 Apa Itu WAG Tool?
 
-WAG Tool adalah Micro-SaaS self-hosted yang mengubah WhatsApp pribadi menjadi API gateway dengan 50 production-ready tools. Tersedia dalam 3 paket:
+WAG Tool is a **pure Web3 platform** with 50 production-ready crypto & utility tools. Access is determined entirely by how many **$WAG tokens** you hold in your wallet on Polygon network.
 
-- **🎁 FREE** - Untuk individu (100 req/hari, 13 tools, gratis selamanya)
-- **⭐ PREMIUM** - Untuk profesional ($99/bulan, 50 tools, unlimited requests)
-- **🏢 ENTERPRISE** - Custom pricing untuk organisasi besar
+**No subscriptions. No databases. No lock-in. Pure blockchain ownership.**
 
-### Fitur Utama:
-- ✅ **50 Production-Ready Tools** - Lengkap dari WhatsApp hingga system tools
-- ✅ **Self-hosted** - Berjalan di laptop, kontrol penuh data
-- ✅ **Flexible Pricing** - FREE forever atau upgrade ke PREMIUM
-- ✅ **API Key Management** - Multiple keys per user
-- ✅ **Usage Tracking** - Monitor penggunaan real-time
-- ✅ **Easy Upgrade** - Via crypto (USDT) atau card (Stripe)
-- ✅ **WhatsApp Integration** - QR code authentication
-- ✅ **Tier-Based Access** - Features unlock saat upgrade
+- 🪙 **Hold $WAG** → Get Access to Tools
+- 🔗 **Use Web3 Portal** → Connect wallet, download client
+- ⚙️ **Run Desktop App** → All 50 tools offline-capable
+- 🚀 **Deploy API** → Self-hosted server for developers
 
----
+### Key Differences from Web2 SaaS
 
-## 💰 Comparison: FREE vs PREMIUM vs ENTERPRISE
-
-| Feature | FREE | PREMIUM | ENTERPRISE |
-|---------|------|---------|-----------|
-| **Harga** | 🎁 Gratis | $99/mo | Custom |
-| **Tools** | 13 tools | 50 tools | 50+ custom |
-| **API Keys** | 1 | 50 | Unlimited |
-| **Daily Requests** | 100 | 100,000 | Unlimited |
-| **Monthly Requests** | 2,000 | 3,000,000 | Unlimited |
-| **Priority Support** | ❌ | ✅ | ✅ Dedicated |
-| **Custom Domain** | ❌ | ✅ | ✅ |
-| **Analytics** | ❌ | ✅ | ✅ |
-| **Webhooks** | ❌ | ✅ | ✅ |
-| **SSO** | ❌ | ✅ | ✅ |
-
-### What's Included in Each Tier:
-
-**FREE Tier (13 Tools)**:
-```
-✅ check-license         (License verification)
-✅ text-to-speech       (Limited 100 chars/day)
-✅ greeting-card        (Card generator)
-✅ pdf-merge            (Up to 5 pages/day)
-✅ api-documentation    (API docs)
-✅ code-snippet-storage (Store code)
-✅ weather-app          (Basic info)
-✅ user-profile         (Profile manager)
-✅ settings-manager     (Settings sync)
-✅ changelog-generator  (Auto changelog)
-✅ logo-generator       (Basic logos)
-✅ todo-manager         (Todo app)
-✅ notification-center  (Notifications)
-```
-
-**PREMIUM Tier (ALL 50 Tools)**:
-```
-✅ EVERYTHING in FREE +
-✅ Full WhatsApp Gateway (unlimited)
-✅ Advanced AI Tools (TTS unlimited)
-✅ Document Processing (full access)
-✅ Crypto & Blockchain (all tools)
-✅ Security & Privacy (all tools)
-✅ System Management (all tools)
-✅ And 30+ more professional tools!
-```
+| Aspect | Traditional SaaS | WAG Tool Web3 |
+|--------|------------------|---------------|
+| **Payment** | Monthly recurring | One-time token purchase |
+| **Access Control** | Company database | Blockchain (immutable) |
+| **User Data** | Email, password stored | Wallet address only |
+| **Ownership** | You rent access | You own $WAG tokens |
+| **Cancellation** | Need to unsubscribe | Just sell tokens |
+| **Privacy** | Data collected | Minimal data collection |
+| **Censorship** | Can be kicked out | Only blockchain can limit |
 
 ---
 
-## 📋 Prerequisites
+## 🏆 Three Token Tiers
 
-Sebelum mulai:
+Your access is **automatically determined** by your $WAG token balance on Polygon. Check your tier instantly at [web3-portal.html](#).
 
-1. **Node.js** v16+ ([Download](https://nodejs.org/))
-2. **Wallet** (MetaMask, Phantom, atau apapun yang support Web3)
-3. **WhatsApp Account** (personal atau business)
-4. **Internet Connection** yang stabil
+### 🌐 Visitor Tier (0 - 999 $WAG)
+```
+✅ View documentation
+✅ See all available tools  
+✅ Understand tier system
+❌ Execute any tools
+
+Next Step: Buy 1,000 $WAG on Uniswap (~$30-100)
+```
+
+### 💎 Holder Tier (1,000 - 9,999 $WAG)
 
 ---
 
-## 🎯 Quick Start: 5 Menit
+## 🚀 Quick Start (5 Minutes)
 
 ### Step 1: Register User
 

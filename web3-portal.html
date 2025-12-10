@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAG Tool - Web3 Portal</title>
+    <script src="https://cdn.jsdelivr.net/gh/ethers-io/ethers.js/dist/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/web3modal/web3modal/dist/index.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .wallet-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .btn-download {
+            background: #28a745;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .btn-download:hover {
+            background: #218838;
+        }
+
+        .wallet-info {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .wallet-info.active {
+            display: block;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .tier-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .tier-visitor {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .tier-holder {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .tier-whale {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .tier-section {
+            margin-top: 30px;
+        }
+
+        .tier-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .tier-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .tier-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .tier-card.holder {
+            border-left-color: #1976d2;
+        }
+
+        .tier-card.whale {
+            border-left-color: #7b1fa2;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .error.active {
+            display: block;
+        }
+
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+            border: 1px solid #ffc107;
+        }
+
+        .warning.active {
+            display: block;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .success.active {
+            display: block;
+        }
+
+        .features {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+        }
+
+        .features h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            color: #666;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .disconnect-btn {
+            background: #dc3545;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .disconnect-btn:hover {
+            background: #c82333;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .btn {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">⚙️</div>
+            <h1>WAG Tool</h1>
+            <p class="subtitle">Web3 Ownership via $WAG Token</p>
+        </header>
+
+        <!-- Wallet Connection -->
+        <div class="wallet-section">
+            <button id="connectBtn" class="btn btn-primary">🔗 Connect Wallet</button>
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Checking token balance...</p>
+            </div>
+        </div>
+
+        <!-- Wallet Info (Shown after connection) -->
+        <div id="walletInfo" class="wallet-info">
+            <div class="info-row">
+                <span class="info-label">📍 Wallet Address</span>
+                <span class="info-value" id="walletAddress"></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">🪙 $WAG Balance</span>
+                <span class="info-value" id="wagBalance"></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">🏆 Your Tier</span>
+                <span id="tierBadge"></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">🔓 Tools Available</span>
+                <span class="info-value" id="toolsCount"></span>
+            </div>
+            <div id="nextTierInfo" class="info-row" style="display: none;">
+                <span class="info-label">🎯 Next Tier Unlock</span>
+                <span class="info-value" id="nextTier"></span>
+            </div>
+
+            <!-- Tier Section -->
+            <div class="tier-section">
+                <h3 style="margin-bottom: 15px;">📊 Your Tier Details</h3>
+                <div id="tierDetails"></div>
+            </div>
+
+            <!-- Download/API Key Section -->
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                <h3 style="margin-bottom: 15px;">📥 Get Started</h3>
+                <button id="downloadBtn" class="btn btn-download" style="display: none;">📥 Download WAG-Client.exe</button>
+                <button id="apiKeyBtn" class="btn btn-secondary">🔑 Generate API Key (Cloud)</button>
+                <button id="buyBtn" class="btn btn-secondary" style="display: none; background: #ffc107; color: #333;">💰 Buy $WAG on Uniswap</button>
+            </div>
+
+            <!-- Disconnect -->
+            <button id="disconnectBtn" class="btn disconnect-btn">🔌 Disconnect Wallet</button>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error" class="error"></div>
+
+        <!-- Warning Message -->
+        <div id="warning" class="warning"></div>
+
+        <!-- Success Message -->
+        <div id="success" class="success"></div>
+
+        <!-- Tier Information (Always visible) -->
+        <div class="tier-section" id="tierInfo" style="display: none;">
+            <h3>🎯 Token Tier Structure</h3>
+            
+            <div class="tier-card">
+                <h3>🌐 Visitor Tier (0 - 999 $WAG)</h3>
+                <p>✅ View-only access</p>
+                <p>✅ Browse tool documentation</p>
+                <p>✅ See what's available in higher tiers</p>
+            </div>
+
+            <div class="tier-card holder">
+                <h3>💎 Holder Tier (1,000 - 9,999 $WAG)</h3>
+                <p>✅ Access to 13 basic tools</p>
+                <p>✅ 1,000 requests per day</p>
+                <p>✅ 1 API key</p>
+                <p><strong>Tools:</strong> Unit Converter, Gas Monitor, Wallet Generator, QR Code, Text-to-Speech, and more...</p>
+            </div>
+
+            <div class="tier-card whale">
+                <h3>🐋 Whale Tier (10,000+ $WAG)</h3>
+                <p>✅ Access to ALL 50 tools</p>
+                <p>✅ 10,000 requests per day</p>
+                <p>✅ 10 API keys</p>
+                <p><strong>Includes:</strong> WA Gateway, Vanity Miner, Private Key Encrypter, Advanced Crypto Tools, System Admin, and more...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const POLYGON_RPC = 'https://polygon-rpc.com';
+        const WAG_TOKEN_ADDRESS = '0x' + '0'.repeat(40); // PLACEHOLDER - Update with real address
+        const WAG_TOKEN_ABI = [
+            'function balanceOf(address owner) view returns (uint256)',
+            'function decimals() view returns (uint8)'
+        ];
+
+        let provider;
+        let signer;
+        let userAddress;
+
+        // Initialize
+        document.getElementById('connectBtn').addEventListener('click', connectWallet);
+        document.getElementById('disconnectBtn').addEventListener('click', disconnectWallet);
+        document.getElementById('downloadBtn').addEventListener('click', downloadClient);
+        document.getElementById('apiKeyBtn').addEventListener('click', generateApiKey);
+        document.getElementById('buyBtn').addEventListener('click', buyTokens);
+
+        // Check for MetaMask on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            if (!window.ethereum) {
+                showWarning('⚠️ MetaMask Not Detected\n\nPlease install MetaMask browser extension:\nhttps://metamask.io/download\n\nAfter installation, refresh this page.');
+            }
+        });
+
+        async function connectWallet() {
+            try {
+                showLoading(true);
+                clearMessages();
+
+                // Check if MetaMask is installed
+                if (!window.ethereum) {
+                    showError('❌ MetaMask not installed.\n\nDownload from: https://metamask.io/download\n\nThen refresh this page to connect your wallet.');
+                    showLoading(false);
+                    return;
+                }
+
+                // Request account access
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                userAddress = accounts[0];
+
+                // Create provider
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+
+                // Get token balance
+                const tokenContract = new ethers.Contract(WAG_TOKEN_ADDRESS, WAG_TOKEN_ABI, provider);
+                const balance = await tokenContract.balanceOf(userAddress);
+                const decimals = await tokenContract.decimals();
+                const balanceFormatted = parseFloat(ethers.utils.formatUnits(balance, decimals));
+
+                // Determine tier
+                let tier, tierName, tierBadgeClass;
+                if (balanceFormatted >= 10000) {
+                    tier = 'whale';
+                    tierName = '🐋 Whale';
+                    tierBadgeClass = 'tier-whale';
+                } else if (balanceFormatted >= 1000) {
+                    tier = 'holder';
+                    tierName = '💎 Holder';
+                    tierBadgeClass = 'tier-holder';
+                } else {
+                    tier = 'visitor';
+                    tierName = '🌐 Visitor';
+                    tierBadgeClass = 'tier-visitor';
+                }
+
+                // Display wallet info
+                displayWalletInfo(userAddress, balanceFormatted, tier, tierName, tierBadgeClass);
+
+                showSuccess(`✅ Connected successfully! You are a ${tierName} tier holder.`);
+            } catch (error) {
+                console.error('Connection error:', error);
+                showError(`❌ Connection failed: ${error.message}`);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function displayWalletInfo(address, balance, tier, tierName, badgeClass) {
+            // Update wallet info
+            document.getElementById('walletAddress').textContent = address;
+            document.getElementById('wagBalance').textContent = `${balance.toFixed(2)} $WAG`;
+            
+            const tierBadge = document.getElementById('tierBadge');
+            tierBadge.innerHTML = `<span class="tier-badge ${badgeClass}">${tierName}</span>`;
+
+            // Set tools count
+            const toolsCount = tier === 'whale' ? '50 (All)' : tier === 'holder' ? '13' : '0';
+            document.getElementById('toolsCount').textContent = toolsCount;
+
+            // Show next tier info if applicable
+            if (tier !== 'whale') {
+                const nextTierDiv = document.getElementById('nextTierInfo');
+                nextTierDiv.style.display = 'flex';
+                
+                let needed;
+                if (tier === 'visitor') {
+                    needed = (1000 - balance).toFixed(2);
+                    document.getElementById('nextTier').textContent = `${needed} $WAG to unlock Holder tier (1,000)`;
+                } else {
+                    needed = (10000 - balance).toFixed(2);
+                    document.getElementById('nextTier').textContent = `${needed} $WAG to unlock Whale tier (10,000)`;
+                }
+            }
+
+            // Update tier details
+            updateTierDetails(tier);
+
+            // Show/hide buttons
+            document.getElementById('downloadBtn').style.display = tier !== 'visitor' ? 'block' : 'none';
+            document.getElementById('apiKeyBtn').style.display = tier !== 'visitor' ? 'block' : 'none';
+            document.getElementById('buyBtn').style.display = tier === 'visitor' ? 'block' : 'none';
+
+            // Show wallet info section
+            document.getElementById('walletInfo').classList.add('active');
+        }
+
+        function updateTierDetails(tier) {
+            const details = document.getElementById('tierDetails');
+            let html = '';
+
+            if (tier === 'whale') {
+                html = `
+                    <div class="tier-card whale" style="border-left: 4px solid #7b1fa2;">
+                        <h3>🐋 Whale Tier - Premium Access</h3>
+                        <p><strong>Tools:</strong> All 50 tools available</p>
+                        <p><strong>Daily Limit:</strong> 10,000 requests</p>
+                        <p><strong>API Keys:</strong> 10 keys</p>
+                        <p><strong>Status:</strong> ✅ Full access unlocked</p>
+                    </div>
+                `;
+            } else if (tier === 'holder') {
+                html = `
+                    <div class="tier-card holder" style="border-left: 4px solid #1976d2;">
+                        <h3>💎 Holder Tier - Basic Access</h3>
+                        <p><strong>Tools:</strong> 13 selected tools</p>
+                        <p><strong>Daily Limit:</strong> 1,000 requests</p>
+                        <p><strong>API Keys:</strong> 1 key</p>
+                        <p><strong>Status:</strong> ✅ Tier 1 features unlocked</p>
+                    </div>
+                `;
+            } else {
+                html = `
+                    <div class="tier-card" style="border-left: 4px solid #999;">
+                        <h3>🌐 Visitor Tier - View Only</h3>
+                        <p><strong>Tools:</strong> No access</p>
+                        <p><strong>Daily Limit:</strong> 0 requests</p>
+                        <p><strong>Status:</strong> ⚠️ Buy $WAG to unlock features</p>
+                    </div>
+                `;
+            }
+
+            details.innerHTML = html;
+        }
+
+        function disconnectWallet() {
+            userAddress = null;
+            provider = null;
+            signer = null;
+            
+            document.getElementById('walletInfo').classList.remove('active');
+            document.getElementById('connectBtn').textContent = '🔗 Connect Wallet';
+            clearMessages();
+        }
+
+        function downloadClient() {
+            // This would trigger download of WAG-Client.exe
+            // For now, show a message
+            showSuccess('📥 Download will start shortly...\n\nWAG-Client.exe (estimated 150MB)');
+            // In production: window.location.href = '/downloads/WAG-Client.exe';
+        }
+
+        function generateApiKey() {
+            const apiKey = 'wag_' + Math.random().toString(36).substring(2, 15);
+            showSuccess(`🔑 API Key: ${apiKey}\n\nUse this key in your API calls:\nAuthorization: Bearer ${apiKey}`);
+        }
+
+        function buyTokens() {
+            window.open('https://app.uniswap.org/swap?outputCurrency=' + WAG_TOKEN_ADDRESS, '_blank');
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.classList.add('active');
+        }
+
+        function showSuccess(message) {
+            const success = document.getElementById('success');
+            success.textContent = message;
+            success.classList.add('active');
+        }
+
+        function showWarning(message) {
+            const warning = document.getElementById('warning');
+            warning.textContent = message;
+            warning.classList.add('active');
+        }
+
+        function clearMessages() {
+            document.getElementById('error').classList.remove('active');
+            document.getElementById('success').classList.remove('active');
+            document.getElementById('warning').classList.remove('active');
+        }
+
+        <!-- Show tier info by default -->
+        document.getElementById('tierInfo').style.display = 'block';
+
+        // If MetaMask not installed, show installation guide
+        if (!window.ethereum) {
+            document.getElementById('connectBtn').textContent = '⚠️ Install MetaMask First';
+            document.getElementById('connectBtn').style.opacity = '0.6';
+            const guide = document.createElement('div');
+            guide.innerHTML = `
+                <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 20px; border: 1px solid #ffc107;">
+                    <h3 style="color: #856404; margin-bottom: 10px;">📱 MetaMask Installation Guide</h3>
+                    <ol style="color: #856404; line-height: 1.8;">
+                        <li>Visit: <strong>https://metamask.io/download</strong></li>
+                        <li>Click "Install MetaMask for [Your Browser]"</li>
+                        <li>Add extension to your browser</li>
+                        <li>Create or import wallet</li>
+                        <li>Add Polygon network (optional - already connected)</li>
+                        <li>Return to this page and refresh 🔄</li>
+                        <li>Click "🔗 Connect Wallet" button</li>
+                    </ol>
+                    <p style="color: #856404; margin-top: 10px; font-size: 12px;">
+                        <strong>Already have MetaMask?</strong> Make sure it's enabled in your browser's extension settings.
+                    </p>
+                </div>
+            `;
+            document.querySelector('.container').appendChild(guide);
+        }
+    </script>
+</body>
+</html>
