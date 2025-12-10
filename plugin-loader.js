@@ -14,7 +14,7 @@ class PluginLoader {
         this.actionPlugins = [];
     }
 
-    // Load all plugins from modules directory
+    // Load all plugins from modules directory (including nested subdirectories)
     loadAll() {
         const modulePath = path.join(__dirname, 'modules');
         
@@ -23,29 +23,45 @@ class PluginLoader {
             return;
         }
 
-        const files = fs.readdirSync(modulePath).filter(f => f.endsWith('.js'));
+        // Recursive function to find all .js files in subdirectories
+        const getAllFiles = (dir) => {
+            let files = [];
+            const entries = fs.readdirSync(dir, { withFileTypes: true });
+            
+            for (const entry of entries) {
+                const fullPath = path.join(dir, entry.name);
+                if (entry.isDirectory()) {
+                    files = files.concat(getAllFiles(fullPath));
+                } else if (entry.isFile() && entry.name.endsWith('.js') && entry.name !== 'index.js') {
+                    files.push(fullPath);
+                }
+            }
+            return files;
+        };
+
+        const files = getAllFiles(modulePath);
         
-        console.log(`\n📦 PLUGIN LOADER - Loading ${files.length} modules...\n`);
+        console.log(`\n📦 PLUGIN LOADER v1.3.0 - Discovering modules...\n`);
 
         files.forEach(file => {
             try {
-                const modulePath = path.join(__dirname, 'modules', file);
-                const pluginModule = require(modulePath);
+                const pluginModule = require(file);
 
                 if (!pluginModule.name || !pluginModule.slug) {
-                    console.warn(`⚠️ Skipped ${file}: Missing name or slug`);
+                    console.warn(`⚠️ Skipped ${path.basename(file)}: Missing name or slug`);
                     return;
                 }
 
-                this.registerPlugin(pluginModule, file);
+                this.registerPlugin(pluginModule, path.relative(modulePath, file));
             } catch (error) {
-                console.error(`❌ Error loading module ${file}:`, error.message);
+                console.error(`❌ Error loading module ${path.basename(file)}: ${error.message}`);
             }
         });
 
-        console.log(`\n✅ Plugin Loader Complete`);
+        console.log(`\n✅ Plugin Loader v1.3.0 Complete`);
         console.log(`   📡 API Endpoints: ${this.apiPlugins.length}`);
-        console.log(`   ⚙️  Automation Actions: ${this.actionPlugins.length}\n`);
+        console.log(`   ⚙️  Automation Actions: ${this.actionPlugins.length}`);
+        console.log(`   📊 Total Tools Ready: ${Object.keys(this.plugins).length}\n`);
     }
 
     // Register a single plugin
