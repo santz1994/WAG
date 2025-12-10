@@ -1,8 +1,8 @@
-# WAG Tool - 50+ Tools Roadmap v1.3.0
+# WAG Tool - 50+ Tools Roadmap v1.4.0
 
-## Status: 5 Production Tools Ready ✅
+## Status: 12 Production Tools Ready ✅ (Phase 1 + Phase 2 Complete)
 
-This document outlines the 45+ planned tools for WAG Gateway, organized by category. Version 1.3.0 launches with 5 fully-implemented, production-ready tools.
+This document outlines the 50+ planned tools for WAG Gateway, organized by category. Version 1.4.0 delivers 12 fully-implemented production-ready tools across Phase 1 (MVP) and Phase 2 (Office Admin).
 
 ---
 
@@ -86,7 +86,121 @@ This document outlines the 45+ planned tools for WAG Gateway, organized by categ
 
 ---
 
-## 🗺️ Phase 2: Office Admin Tools (10 tools) - Next Sprint
+## 🗺️ Phase 2: Office Admin Tools (7 tools) ✅ COMPLETE (v1.4.0)
+
+### 6. Text Cleaner ✅
+- **Slug:** `text-cleaner`
+- **Category:** Data
+- **Status:** Production Ready
+- **Actions:**
+  - `remove-duplicates` - Remove duplicate lines
+  - `sort-lines` - Alphabetical sorting
+  - `format-json` - Pretty-print JSON
+  - `minify-text` - Remove whitespace
+  - `normalize-whitespace` - Consistent spacing
+  - `split-text` - Split by delimiters
+- **Dependencies:** None (built-in)
+- **API Endpoint:** `POST /tools/text-cleaner`
+- **Lines of Code:** 350
+
+### 7. File Renamer ✅
+- **Slug:** `file-renamer`
+- **Category:** File
+- **Status:** Production Ready
+- **Actions:**
+  - `add-prefix` - Prepend text to filenames
+  - `add-suffix` - Append text before extension
+  - `remove-extension` - Strip file extensions
+  - `replace-pattern` - Find and replace in names
+  - `change-extension` - Convert file types
+  - `batch-rename` - Process directory with patterns
+- **Dependencies:** fs, path (built-in)
+- **API Endpoint:** `POST /tools/file-renamer`
+- **Lines of Code:** 400
+- **Features:** DryRun preview mode, bulk operations
+
+### 8. Excel Converter ✅
+- **Slug:** `excel-converter`
+- **Category:** Data
+- **Status:** Production Ready
+- **Actions:**
+  - `convert-xlsx` - XLSX to JSON
+  - `convert-csv` - CSV to JSON
+  - `preview-data` - Preview without conversion
+  - `get-sheets` - List sheet names
+  - `batch-convert` - Directory processing
+- **Dependencies:** xlsx npm package
+- **API Endpoint:** `POST /tools/excel-converter`
+- **Lines of Code:** 320
+- **Features:** Sheet selection, row filtering, pretty-print
+
+### 9. PDF Merger ✅
+- **Slug:** `pdf-merger`
+- **Category:** Document
+- **Status:** Production Ready
+- **Actions:**
+  - `merge` - Combine multiple PDFs
+  - `extract-pages` - Export specific pages
+  - `reorder-pages` - Rearrange document pages
+  - `split` - Separate PDF into multiple files
+- **Dependencies:** pdf-lib npm package
+- **API Endpoint:** `POST /tools/pdf-merger`
+- **Lines of Code:** 240
+- **Features:** 1-based page numbering, async operations
+
+### 10. Image to PDF ✅
+- **Slug:** `image-to-pdf`
+- **Category:** Document
+- **Status:** Production Ready
+- **Actions:**
+  - `images-to-pdf` - Convert images to PDF
+  - `bulk-convert` - Batch directory processing
+  - `add-image-watermark` - Overlay watermarks
+- **Dependencies:** pdf-lib, sharp npm packages
+- **API Endpoint:** `POST /tools/image-to-pdf`
+- **Lines of Code:** 280
+- **Features:** Auto-scaling, multiple page sizes (A4, Letter, A3, A5)
+
+### 11. Duplicate Finder ✅
+- **Slug:** `duplicate-finder`
+- **Category:** File
+- **Status:** Production Ready
+- **Actions:**
+  - `find-duplicates` - Detect by SHA256 hash
+  - `remove-duplicates` - Delete duplicate files
+  - `move-duplicates` - Relocate to folder
+  - `scan-directory` - Recursive directory scan
+- **Dependencies:** crypto (built-in), fs, path
+- **API Endpoint:** `POST /tools/duplicate-finder`
+- **Lines of Code:** 340
+- **Features:** DryRun preview, storage savings calculation
+
+### 12. Invoice Generator ✅
+- **Slug:** `invoice-gen`
+- **Category:** Document
+- **Status:** Production Ready
+- **Actions:**
+  - `generate-invoice` - Create professional invoice PDF
+  - `generate-quote` - Generate quote PDF
+  - `batch-generate` - Process multiple documents
+- **Dependencies:** pdfkit, handlebars npm packages
+- **API Endpoint:** `POST /tools/invoice-gen`
+- **Lines of Code:** 360
+- **Features:** Tax calculation, itemized lists, custom notes
+
+---
+
+## Phase 2 Summary
+- **Tools Implemented:** 7
+- **Total Lines of Code:** 2,280+
+- **Total Actions:** 30+
+- **Dependencies Added:** pdf-lib, xlsx, handlebars
+- **Dependencies Now:** 20 npm packages (351 audited)
+- **Test Suite:** test-phase2-tools.js ✅
+
+---
+
+## 🗺️ Phase 3: Creator Studio Tools (10 tools) - Next Sprint
 
 ### 6. PDF Merger
 - **Category:** Document
