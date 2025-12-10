@@ -1,6 +1,7 @@
 // server.js - WAG NOTIFICATION GATEWAY API SERVER
 // Jembatan antara Website Developer dan WhatsApp
 // Syarat: Developer harus hold WAG Token
+// Security: API Key + Persistent Queue + Random Rate Limiting
 
 const express = require('express');
 const { Client, LocalAuth } = require('whatsapp-web.js');
@@ -8,6 +9,8 @@ const qrcode = require('qrcode-terminal');
 const { ethers } = require('ethers');
 const cors = require('cors');
 const readline = require('readline');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -16,6 +19,9 @@ app.use(cors());
 
 // --- KONFIGURASI ---
 const PORT = process.env.PORT || 3000;
+const API_SECRET = process.env.API_SECRET || "change-this-secret-key";
+const QUEUE_FILE = path.join(__dirname, '.wag-queue.json');
+
 const CONFIG = {
     TOKEN_ADDRESS: process.env.TOKEN_ADDRESS || "0x4e928F638cFD2F1c75437A41E2d386df79eeE680",
     MIN_HOLDING: parseInt(process.env.MIN_HOLDING) || 1000,
@@ -23,7 +29,36 @@ const CONFIG = {
 };
 
 let isClientReady = false;
-let messageQueue = []; // Queue untuk menangani multiple requests
+let messageQueue = []; // In-memory queue (persisted to disk)
+
+// --- QUEUE PERSISTENCE FUNCTIONS ---
+function loadQueueFromDisk() {
+    try {
+        if (fs.existsSync(QUEUE_FILE)) {
+            const data = fs.readFileSync(QUEUE_FILE, 'utf-8');
+            messageQueue = JSON.parse(data);
+            console.log(`✅ Loaded ${messageQueue.length} queued messages from disk`);
+            return messageQueue;
+        }
+    } catch (error) {
+        console.error('⚠️ Error loading queue:', error.message);
+    }
+    return [];
+}
+
+function saveQueueToDisk() {
+    try {
+        fs.writeFileSync(QUEUE_FILE, JSON.stringify(messageQueue, null, 2));
+    } catch (error) {
+        console.error('⚠️ Error saving queue:', error.message);
+    }
+}
+
+// --- RANDOM DELAY HELPER ---
+function getRandomDelay() {
+    // Random delay between 1000ms and 4000ms to avoid bot detection
+    return Math.floor(Math.random() * 3000) + 1000;
+}
 
 // --- 1. INISIALISASI WA CLIENT ---
 const client = new Client({
@@ -34,6 +69,22 @@ const client = new Client({
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
     }
+});
+
+// --- API KEY AUTHENTICATION MIDDLEWARE ---
+app.use((req, res, next) => {
+    // Skip auth untuk health check
+    if (req.path === '/health' || req.path === '/info') return next();
+    
+    const apiKey = req.headers['x-api-key'];
+    if (apiKey !== API_SECRET) {
+        console.warn(`⚠️ Unauthorized access attempt from ${req.ip}`);
+        return res.status(401).json({ 
+            status: false, 
+            message: 'Unauthorized: Invalid or missing API Key. Use header: x-api-key' 
+        });
+    }
+    next();
 });
 
 client.on('qr', (qr) => {
@@ -49,9 +100,11 @@ client.on('ready', () => {
     console.log('🚀 WAG API Gateway berjalan...\n');
     isClientReady = true;
     
-    // Process message queue jika ada
+    // Load persisted queue dan process
+    loadQueueFromDisk();
     if (messageQueue.length > 0) {
         console.log(`📬 Processing ${messageQueue.length} queued messages...`);
+        processQueuedMessages();
     }
 });
 
@@ -64,6 +117,25 @@ client.on('disconnected', (reason) => {
     console.log('⚠️ WhatsApp Disconnected:', reason);
     isClientReady = false;
 });
+
+// --- QUEUE PROCESSOR ---
+async function processQueuedMessages() {
+    while (messageQueue.length > 0 && isClientReady) {
+        const msg = messageQueue.shift();
+        try {
+            const chatId = formatWhatsAppNumber(msg.number);
+            await client.sendMessage(chatId, msg.message);
+            console.log(`✉️  Queued message sent to ${msg.number}`);
+        } catch (error) {
+            console.error(`❌ Failed to send queued message to ${msg.number}:`, error.message);
+            messageQueue.unshift(msg); // Re-add to front if failed
+            break;
+        }
+        // Use random delay to avoid bot detection
+        await new Promise(r => setTimeout(r, getRandomDelay()));
+    }
+    saveQueueToDisk();
+}
 
 // --- 2. CEK LISENSI TOKEN (License Gate) ---
 async function checkLicense(userWallet) {
@@ -211,8 +283,8 @@ app.post('/send-bulk', async (req, res) => {
                 status: 'success'
             });
             
-            // Delay 1 detik antar pesan untuk menghindari rate limit
-            await new Promise(r => setTimeout(r, 1000));
+            // Random delay (1-4 seconds) antar pesan untuk menghindari rate limit dan bot detection
+            await new Promise(r => setTimeout(r, getRandomDelay()));
         } catch (error) {
             results.push({
                 number: msg.number,
@@ -222,6 +294,7 @@ app.post('/send-bulk', async (req, res) => {
         }
     }
 
+    saveQueueToDisk(); // Save queue state after bulk send
     res.json({
         status: true,
         total: messages.length,

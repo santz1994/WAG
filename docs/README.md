@@ -1,6 +1,9 @@
 # WAG Gateway - Documentation Hub
 
-**Status:** Tahap 1-3 Complete ✅ | Tahap 4 (Mainnet) Pending ⏳
+**Status:** Tahap 1-3 Complete ✅ | Tahap 4 (Mainnet) Pending ⏳  
+**Version:** 1.1.0 (with Security & Automation enhancements)
+
+---
 
 ## 📚 Documentation by Category
 
@@ -13,6 +16,23 @@
 - **[API Reference](api/API.md)** - All 5 endpoints with examples (PHP, Node.js, Python, cURL)
 - **[Laravel Integration](api/LARAVEL.md)** - Laravel service integration guide
 - **[API README](api/README.md)** - API overview
+
+### 🔐 Security & Production (NEW in v1.1.0)
+- **[Security Hardening](api/SECURITY.md)** - ⭐ CRITICAL: API Key auth + Queue persistence + Rate limiting
+  - API Secret authentication (x-api-key header)
+  - Disk-based message queue (messages survive server restart)
+  - Randomized rate limiting (avoid WhatsApp bot detection)
+  - Production deployment checklist
+
+### 🤖 Automation Framework (NEW in v1.1.0)
+- **[ZAPIER LOKAL - Automation Engine](api/AUTOMATION.md)** - ⭐ NEW: Local automation framework
+  - File monitoring and triggers
+  - Multi-step workflow execution
+  - PDF watermarking support
+  - WhatsApp notifications with attachments
+  - Real-world use cases (invoices, orders, contracts)
+  - Monetization strategies for B2B
+  - SaaS pricing models
 
 ### 🧪 Testing & Validation
 - **[Testing Guide](testing/TESTING.md)** - How to test the gateway
@@ -32,162 +52,246 @@
 - **[Next Actions](reference/NEXT-ACTIONS.md)** - What's pending and next steps
 - **[Roadmap](reference/ROADMAP.md)** - Future features and timeline
 
-**Deploy ke Polygon Mainnet dengan real token & liquidity**
+---
 
-📍 Location: `/docs/deployment/`
+## ⭐ What's New in v1.1.0 - Security & Automation Update
 
-### Files:
-1. **MAINNET.md** - Panduan deployment (coming soon)
+### 🔐 Critical Security Enhancements
 
-### Prerequisites:
-- ✅ Tahap 1 & 2 sudah PASS
-- 💰 POL tokens (~10-15 POL untuk gas + liquidity)
-- ⏰ Ready untuk operasional
+**1. API Key Authentication**
+```
+Header: x-api-key: your-secret-key
+```
+- All endpoints protected (except /health, /info)
+- Prevents unauthorized message sending
+- Per-request validation
+- Detailed failure logging
+
+**2. Queue Persistence**
+- Messages saved to disk (`.wag-queue.json`)
+- Survive server crashes/restarts
+- Automatic retry on reconnection
+- Full queue recovery
+
+**3. Randomized Rate Limiting**
+- Variable delays: 1-4 seconds between messages
+- Mimics human behavior
+- Avoids WhatsApp bot detection
+- Prevents account bans
+
+**See Full Details:** [SECURITY.md](api/SECURITY.md)
+
+### 🤖 New Automation Framework ("ZAPIER LOKAL")
+
+Transform WAG Gateway into a full automation platform:
+
+**Core Features:**
+- 📁 File system monitoring (watch folders for triggers)
+- 🔄 Sequential workflow execution
+- 📄 PDF watermarking
+- 💬 WhatsApp notifications with attachments
+- 🚀 Easy integration with existing systems
+
+**Real-World Use Cases:**
+
+1. **Invoice Processing** (Rp 3M/month value)
+   - Trigger: New invoice PDF
+   - Watermark → Send to customer → Archive → Notify accountant
+
+2. **E-Commerce Orders** (Rp 2M/month value)
+   - Trigger: New order CSV
+   - Parse → Format → Send to driver → Send to customer
+
+3. **HR Contracts** (Rp 2.5M/month value)
+   - Trigger: New employment contract
+   - Watermark → Archive → Notify HR → Delete original
+
+**See Full Details:** [AUTOMATION.md](api/AUTOMATION.md)
 
 ---
 
-## 📖 REFERENCE DOCUMENTS
+## 📊 Project Status
 
-📍 Location: `/docs/reference/`
+| Phase | Status | Completion |
+|-------|--------|-----------|
+| **Tahap 1** | ✅ License Gate Testing | 100% |
+| **Tahap 2** | ✅ Website Integration | 100% |
+| **Tahap 2.5** | ✅ Multi-Industry Solution | 100% |
+| **Tahap 3** | ✅ Packaging (.exe Build) | 100% |
+| **Tahap 4** | ⏳ Mainnet Deployment | Pending |
 
-### Files:
-- **ROADMAP.md** - Complete timeline & overview
-- **README.md** - Project introduction
-- **ARCHITECTURE.md** - System design details
+**Overall Completion:** 75% (3 of 4 phases complete)
 
 ---
 
-## 📂 FOLDER STRUCTURE
+## 🎯 Implementation Quick Start
+
+### For Security Hardening
+
+1. Copy `.env.example` to `.env`
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Change `API_SECRET` to a strong random string
+   ```env
+   API_SECRET=your-32-character-random-key-here
+   ```
+
+3. All requests now require header:
+   ```bash
+   curl -X POST http://localhost:3000/send-message \
+     -H "x-api-key: your-32-character-random-key-here" \
+     -H "Content-Type: application/json" \
+     -d '{"number":"081234567890","message":"Test","wallet":"0x..."}'
+   ```
+
+### For Automation Framework
+
+1. Install dependency:
+   ```bash
+   npm install chokidar
+   ```
+
+2. Create workflow:
+   ```javascript
+   const AutomationEngine = require('./automation');
+   const automation = new AutomationEngine(client);
+   
+   automation.registerWorkflow(
+       'Invoice to Customer',
+       { type: 'file', pattern: 'invoice-*.pdf' },
+       [
+           { type: 'watermark' },
+           { type: 'notify', number: '62812345678', message: 'Invoice {filename} ready', attach: true },
+           { type: 'move', destination: 'sent' }
+       ]
+   );
+   
+   automation.start();
+   ```
+
+3. Drop PDF into `automation/input/` → Automation runs automatically
+
+---
+
+## 📂 Project Structure
 
 ```
 d:\Project\Unicorn\WAG Tool\wag-app\
 │
-├─ 📘 docs/
+├─ 📘 docs/                          ← All documentation
+│  ├─ README.md                      ← You are here
+│  ├─ api/
+│  │  ├─ API.md                      ← API endpoints
+│  │  ├─ SECURITY.md                 ← 🔐 NEW: Security guide
+│  │  ├─ AUTOMATION.md               ← 🤖 NEW: Automation framework
+│  │  └─ LARAVEL.md
 │  ├─ testing/
-│  │  ├─ TESTING.md          ← 👈 Start here for Tahap 1
-│  │  ├─ CHECKLIST.md
-│  │  └─ TEMPLATE.md
-│  │
 │  ├─ packaging/
-│  │  ├─ PACKAGING.md        ← 👈 Start here for Tahap 2
-│  │  └─ CHECKLIST.md
-│  │
 │  ├─ deployment/
-│  │  └─ MAINNET.md          ← 👈 Start here for Tahap 3
-│  │
 │  └─ reference/
-│     ├─ ROADMAP.md          ← Overall timeline
-│     ├─ README.md
-│     └─ ARCHITECTURE.md
 │
-├─ 🔧 CODE FILES
-│  ├─ app.js
-│  ├─ WAGToken.sol
-│  ├─ .env
+├─ 🔧 Core Application
+│  ├─ server.js                      ← Main API server (with security)
+│  ├─ app.js                         ← CLI mode
+│  ├─ automation.js                  ← 🤖 NEW: Automation engine
+│  └─ WAGToken.sol
+│
+├─ 📦 Distribution
+│  ├─ dist/
+│  │  └─ WAG-Gateway.exe            ← Ready to distribute
+│  └─ examples/
+│
+├─ 🔑 Configuration
+│  ├─ .env                          ← Your API secret & settings
+│  ├─ .env.example                  ← Template (safe to commit)
 │  └─ package.json
 │
-└─ 📋 LEGACY DOCS (untuk referensi)
-   ├─ START_HERE.md
-   ├─ QUICK_START.md
-   └─ ... (other old docs)
+└─ 🤖 Automation Folders (created at runtime)
+   ├─ automation/
+   │  ├─ input/                     ← Drop files here to trigger
+   │  ├─ output/                    ← Processed files saved here
+   │  └─ temp/                      ← Temporary working files
+   │
+   └─ .wag-queue.json               ← Persistent message queue
+
 ```
 
 ---
 
-## ✅ WHERE TO START
+## 🚀 Next Steps
 
-### Scenario 1: Ingin Testing
-👉 Buka: `/docs/testing/TESTING.md`
+### Immediate (This Week)
 
-### Scenario 2: Sudah Pass Testing, Ingin Packaging
-👉 Buka: `/docs/packaging/PACKAGING.md`
+- [ ] Update `.env` with strong `API_SECRET`
+- [ ] Install `chokidar` for automation (`npm install chokidar`)
+- [ ] Test security hardening with x-api-key header
+- [ ] Create first automation workflow for your use case
+- [ ] Test queue persistence (restart server, check pending messages)
 
-### Scenario 3: Ingin Lihat Overall Timeline
-👉 Buka: `/docs/reference/ROADMAP.md`
+### Short Term (This Month)
 
-### Scenario 4: Ingin Lihat Architecture
-👉 Buka: `/docs/reference/ARCHITECTURE.md`
+- [ ] Implement PDF watermarking (`npm install pdf-lib`)
+- [ ] Create 3 automation workflows for clients
+- [ ] Document workflow templates
+- [ ] Build simple UI dashboard for workflow management
+- [ ] Start beta testing with 1-2 clients
 
----
+### Medium Term (Next Month)
 
-## 🎯 EXECUTION PATH
-
-```
-┌─────────────────────────────────────────────────────┐
-│ Anda di sini: TAHAP 1 TESTING                       │
-├─────────────────────────────────────────────────────┤
-│ /docs/testing/TESTING.md ← Buka ini sekarang        │
-│                                                      │
-│ Kerjakan:                                           │
-│ 1. Run: node app.js dengan Wallet A (1M)           │
-│ 2. Run: node app.js dengan Wallet B (0)            │
-│ 3. Document hasil di TEMPLATE.md                    │
-│                                                      │
-│ Waktu: ~1 jam                                       │
-│ Hasil: ✅ PASS atau ❌ FAIL                          │
-└─────────────────────────────────────────────────────┘
-        ↓ Jika PASS
-┌─────────────────────────────────────────────────────┐
-│ TAHAP 2 PACKAGING                                   │
-├─────────────────────────────────────────────────────┤
-│ /docs/packaging/PACKAGING.md                        │
-│                                                      │
-│ Kerjakan:                                           │
-│ 1. Run: npm run pkg                                 │
-│ 2. Test: .\wag-tool.exe                            │
-│ 3. Verify hasil                                     │
-│                                                      │
-│ Waktu: ~30 min                                      │
-│ Hasil: .exe ready untuk distribusi                 │
-└─────────────────────────────────────────────────────┘
-        ↓ Jika Ready
-┌─────────────────────────────────────────────────────┐
-│ TAHAP 3 DEPLOYMENT (Optional, later)               │
-├─────────────────────────────────────────────────────┤
-│ /docs/deployment/MAINNET.md                         │
-│                                                      │
-│ Requirements:                                       │
-│ - POL tokens (~10-15 POL)                          │
-│ - Ready untuk operasional                          │
-│                                                      │
-│ Waktu: ~1-2 hari                                    │
-│ Hasil: Mainnet production live                      │
-└─────────────────────────────────────────────────────┘
-```
+- [ ] Deploy Tahap 4 (Mainnet) for real token trading
+- [ ] Launch automation marketplace (pre-built workflows)
+- [ ] Create SaaS pricing tiers
+- [ ] Scale to 10+ client workflows
+- [ ] Integrate with common platforms (Shopify, WordPress, etc.)
 
 ---
 
-## 🚀 QUICK COMMANDS
+## 💡 Monetization Strategy
 
-### Tahap 1: Testing
-```powershell
-cd "d:\Project\Unicorn\WAG Tool\wag-app"
-node app.js
-# Input Wallet A → Expected: ✅ Valid
-# Input Wallet B → Expected: ❌ Denied
-```
+### Model 1: Per-Workflow SaaS
+- **Basic:** Rp 500K/month (1 workflow)
+- **Pro:** Rp 2M/month (5 workflows)
+- **Enterprise:** Rp 10M/month (unlimited)
 
-### Tahap 2: Packaging
-```powershell
-npm run pkg
-.\wag-tool.exe
-```
+### Model 2: Marketplace
+- **Pre-built Workflows:** Rp 100K-500K each
+- **Custom Development:** Rp 5M-20M per project
 
-### Tahap 3: Deployment (later)
-```
-Will provide when you're ready
-```
+### Model 3: Token-Based
+- Businesses purchase WAG tokens to unlock automation features
+- Higher token holding = more features unlocked
 
 ---
 
-## 📞 SUPPORT
+## 🔗 Related Resources
 
-**Stuck?** Check the specific Tahap documentation in `/docs/`
-
-**Error?** Each doc has troubleshooting section
-
-**Overview?** Read `/docs/reference/ROADMAP.md`
+- **GitHub:** https://github.com/santz1994/WAG
+- **Email:** danielrizaldy@gmail.com
+- **Blockchain Explorer:** https://amoy.polygonscan.com/
 
 ---
 
-**Next Action: Open `/docs/testing/TESTING.md` and start testing!** 🚀
+## 📞 Support & Documentation
+
+**Still learning?**
+1. Start with [QUICK START](reference/QUICK-START.md)
+2. Then read [API Reference](api/API.md)
+3. Dive into [SECURITY.md](api/SECURITY.md) for production
+
+**Ready to automate?**
+1. Read [AUTOMATION.md](api/AUTOMATION.md)
+2. Check real-world examples
+3. Create your first workflow
+
+**Hit an issue?**
+1. Check individual documentation (each has troubleshooting)
+2. Review server logs
+3. Create GitHub issue with error details
+
+---
+
+**Version:** 1.1.0  
+**Last Updated:** December 10, 2025  
+**Status:** Production Ready (with security) + Automation Ready

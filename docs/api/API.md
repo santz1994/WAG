@@ -15,6 +15,41 @@ WAG API Server adalah jembatan antara Website Anda dan WhatsApp. Developer dapat
 
 ---
 
+## 🔐 AUTHENTICATION (REQUIRED)
+
+**All endpoints (except `/health` and `/info`) require API Key authentication.**
+
+### How to Authenticate
+
+Add header to every request:
+```
+x-api-key: your-secret-api-key
+```
+
+### Setting Your API Key
+
+1. Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
+```
+
+2. Change the API_SECRET in `.env`:
+```env
+API_SECRET=your-super-secret-api-key-change-this
+```
+
+3. Use that same key in all requests:
+```bash
+curl -X POST http://localhost:3000/send-message \
+  -H "x-api-key: your-super-secret-api-key-change-this" \
+  -H "Content-Type: application/json" \
+  -d '{"number":"081234567890","message":"Test","wallet":"0x..."}'
+```
+
+**⚠️ Important:** Change the default API_SECRET before going to production!
+
+---
+
 ## 🚀 QUICK START
 
 ### 1. Run Server
@@ -39,7 +74,7 @@ Server siap menerima requests dari website Anda.
 ### 1. Health Check
 **Endpoint:** `GET /health`
 
-Check status server.
+Check status server. **No authentication required.**
 
 **Response:**
 ```json
@@ -56,6 +91,12 @@ Check status server.
 **Endpoint:** `POST /send-message`
 
 Kirim 1 pesan WhatsApp.
+
+**Headers (Required):**
+```
+x-api-key: your-secret-key
+Content-Type: application/json
+```
 
 **Request Body:**
 ```json
@@ -89,6 +130,12 @@ Kirim 1 pesan WhatsApp.
 **Endpoint:** `POST /send-bulk`
 
 Kirim multiple messages sekaligus.
+
+**Headers (Required):**
+```
+x-api-key: your-secret-key
+Content-Type: application/json
+```
 
 **Request Body:**
 ```json
