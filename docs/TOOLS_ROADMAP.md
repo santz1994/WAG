@@ -1,8 +1,8 @@
-# WAG Tool - 50+ Tools Roadmap v1.5.0
+# WAG Tool - 50+ Tools Roadmap v1.6.0
 
-## Status: 17 Production Tools Ready ✅ (Phase 1 + Phase 2 + Phase 3 Complete)
+## Status: 22 Production Tools Ready ✅ (Phase 1 + Phase 2 + Phase 3 + Phase 4 Complete)
 
-This document outlines the 50+ planned tools for WAG Gateway, organized by category. Version 1.5.0 delivers 17 fully-implemented production-ready tools across Phase 1 (MVP), Phase 2 (Office Admin), and Phase 3 (Creator Studio).
+This document outlines the 50+ planned tools for WAG Gateway, organized by category. Version 1.6.0 delivers 22 fully-implemented production-ready tools across Phase 1 (MVP), Phase 2 (Office Admin), Phase 3 (Creator Studio), and Phase 4 (Developer Toolkit).
 
 ---
 
@@ -348,7 +348,91 @@ This document outlines the 50+ planned tools for WAG Gateway, organized by categ
 
 ---
 
-## 🛠️ Phase 4: Developer Toolkit Tools (10 tools) - Next Sprint
+## 🛠️ Phase 4: Developer Toolkit Tools (5 tools) ✅ COMPLETE (v1.6.0)
+
+### 18. Port Scanner ✅
+- **Slug:** `port-scanner`
+- **Category:** Developer
+- **Status:** Production Ready
+- **Actions:**
+  - `scan-single-port` - Check if single port is open
+  - `scan-port-range` - Scan range of ports (max 10,000)
+  - `scan-common-ports` - Quick scan of 20 common ports
+  - `batch-scan` - Scan multiple hosts on same port
+- **Dependencies:** Node.js net module (built-in)
+- **API Endpoint:** `POST /tools/port-scanner`
+- **Lines of Code:** 350
+- **Features:** Concurrent scanning, timeout handling, service detection
+
+### 19. JWT Debugger ✅
+- **Slug:** `jwt-debugger`
+- **Category:** Developer
+- **Status:** Production Ready
+- **Actions:**
+  - `decode-jwt` - Decode JWT header/payload/signature
+  - `verify-signature` - Verify JWT with secret
+  - `generate-jwt` - Create signed JWT tokens
+  - `analyze-claims` - Analyze standard and custom claims
+- **Dependencies:** crypto (Node.js built-in)
+- **API Endpoint:** `POST /tools/jwt-debugger`
+- **Lines of Code:** 300
+- **Features:** Expiry checking, claim analysis, multiple algorithms (HS256, HS384, HS512)
+
+### 20. SSL Certificate Checker ✅
+- **Slug:** `ssl-checker`
+- **Category:** Developer
+- **Status:** Production Ready
+- **Actions:**
+  - `get-cert-info` - Get certificate details
+  - `validate-cert` - Validate certificate authenticity
+  - `check-expiry` - Check expiration status with warnings
+  - `monitor-expiry` - Monitor multiple hosts
+- **Dependencies:** https, tls (Node.js built-in)
+- **API Endpoint:** `POST /tools/ssl-checker`
+- **Lines of Code:** 280
+- **Features:** Expiry monitoring, batch checking, 30-day warning threshold
+
+### 21. RegEx Tester ✅
+- **Slug:** `regex-tester`
+- **Category:** Developer
+- **Status:** Production Ready
+- **Actions:**
+  - `test-pattern` - Test regex against text
+  - `extract-matches` - Extract matching groups
+  - `replace-pattern` - Find and replace with regex
+  - `validate-regex` - Validate regex pattern
+- **Dependencies:** None (built-in)
+- **API Endpoint:** `POST /tools/regex-tester`
+- **Lines of Code:** 240
+- **Features:** Capture groups, test suite, flag support (g, i, m, etc.)
+
+### 22. JSON Validator ✅
+- **Slug:** `json-validator`
+- **Category:** Developer
+- **Status:** Production Ready
+- **Actions:**
+  - `validate-json` - Parse and validate JSON syntax
+  - `format-json` - Pretty-print with indentation
+  - `minify-json` - Remove whitespace and compress
+  - `validate-schema` - Validate against JSON Schema
+- **Dependencies:** jsonschema npm package
+- **API Endpoint:** `POST /tools/json-validator`
+- **Lines of Code:** 290
+- **Features:** Schema validation, depth calculation, size optimization
+
+---
+
+## Phase 4 Summary
+- **Tools Implemented:** 5
+- **Total Lines of Code:** 1,460+
+- **Total Actions:** 20+
+- **Dependencies Added:** jsonschema
+- **Test Suite:** test-phase4-tools.js ✅
+- **Roadmap Progress:** 44% complete (22/50 tools)
+
+---
+
+## 🔐 Phase 5: Crypto/Degen Tools (10 tools) - Next Sprint
 - **Difficulty:** Medium
 - **Dependencies:** sharp, exif-parser
 - **Actions:** remove-exif, remove-all-metadata, bulk-process
