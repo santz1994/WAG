@@ -1,7 +1,7 @@
 {
   "name": "wag-api-server",
-  "version": "1.0.0",
-  "description": "WAG API Gateway - WhatsApp Notification Engine (Token-Gated via Blockchain)",
+  "version": "3.0.0",
+  "description": "WAG Tool v3.0.0 - 50 Production Tools Platform (WhatsApp Gateway + System Tools, Token-Gated via Blockchain)",
   "main": "server.js",
   "bin": "server.js",
   "scripts": {
