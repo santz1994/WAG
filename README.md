@@ -295,10 +295,15 @@ MIT License - Anda bebas modify dan distribute.
 
 ## 📚 Documentation
 
-- **[Quick Start](./docs/QUICK_START.md)** - Get started in 2 minutes
-- **[Tools Roadmap](./docs/TOOLS_ROADMAP.md)** - All 50+ tools planned
-- **[Architecture](./docs/ARCHITECTURE.md)** - System design & modules
-- **[Audit Report](./docs/AUDIT_REPORT.md)** - Security & strategy
+Semua dokumentasi terorganisir di folder `/docs` dengan max 3 files per kategori:
+
+**👉 [Lihat Documentation Index](./docs/INDEX.md)**
+
+### Quick Links:
+- **[Quick Start](./docs/QUICK_START.md)** - Mulai dalam 2 menit
+- **[Tools Roadmap](./docs/TOOLS_ROADMAP.md)** - 50+ tools planned
+- **[Architecture](./docs/ARCHITECTURE.md)** - System design
+- **[API Reference](./docs/api/API.md)** - REST endpoints
 
 ---
 
