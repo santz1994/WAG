@@ -516,9 +516,10 @@ License: Check daily via smart contract
 
 ## 🔗 Related Documents
 
-- [ARCHITECTURE.md](./docs/ARCHITECTURE.md) - System design
+- [ARCHITECTURE.md](./ARCHITECTURE.md) - System design
 - [AUDIT_REPORT.md](./AUDIT_REPORT.md) - Strategic analysis
-- [README.md](./README.md) - Project overview
+- [QUICK_START.md](./QUICK_START.md) - Getting started
+- [README.md](../README.md) - Project overview
 
 ---
 
