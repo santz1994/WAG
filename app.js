@@ -1,179 +1,156 @@
-// app.js
-const { Client, LocalAuth } = require('whatsapp-web.js');
-const qrcode = require('qrcode-terminal');
-const { ethers } = require('ethers');
-const readline = require('readline');
-require('dotenv').config();
+#!/usr/bin/env node
 
-// --- KONFIGURASI TOKEN ANDA ---
-const TOKEN_ADDRESS = process.env.TOKEN_ADDRESS || "0x0000000000000000000000000000000000000000";
-const MIN_HOLDING = parseInt(process.env.MIN_HOLDING) || 1000;
-const RPC_URL = process.env.RPC_URL || "https://polygon-rpc.com";
+// app.js - WAG LOCAL CLOUD MAIN ENTRY POINT
+// Modular architecture: WhatsApp + Media + Network + Crypto + Automation
 
-// ABI Singkat (Hanya fungsi cek saldo)
-const ABI = [
-  "function balanceOf(address owner) view returns (uint256)",
-  "function decimals() view returns (uint8)"
-];
+const CLIMenu = require('./core/menu');
+const WhatsAppModule = require('./modules/whatsapp/server');
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+async function main() {
+    const menu = new CLIMenu();
+    let running = true;
 
-console.clear();
-console.log("==========================================");
-console.log("   WAG TOOL - TOKEN GATED SOFTWARE v1.0   ");
-console.log("==========================================");
-console.log("");
+    while (running) {
+        const choice = await menu.showMainMenu();
 
-// FUNGSI 1: Cek Lisensi (Cek Saldo di Blockchain)
-async function checkLicense(userWallet) {
-    console.log("\n[1/3] Memeriksa Saldo Token WAG Anda...");
-    
-    try {
-        const provider = new ethers.JsonRpcProvider(RPC_URL);
-        const contract = new ethers.Contract(TOKEN_ADDRESS, ABI, provider);
-        
-        // Cek saldo
-        const rawBalance = await contract.balanceOf(userWallet);
-        const decimals = await contract.decimals();
-        const balance = ethers.formatUnits(rawBalance, decimals);
-
-        console.log(`Saldo WAG Anda: ${balance} Token`);
-
-        if (parseFloat(balance) >= MIN_HOLDING) {
-            console.log("✅ LISENSI VALID! Akses Diberikan.");
-            return true;
-        } else {
-            console.log("❌ AKSES DITOLAK.");
-            console.log(`Syarat: Hold minimal ${MIN_HOLDING} WAG.`);
-            console.log("Silahkan beli token dulu di Uniswap/Quickswap.");
-            return false;
+        switch (choice) {
+            case '1':
+                await handleWhatsApp(menu);
+                break;
+            case '2':
+                await menu.showMediaMenu();
+                console.log('\n⏳ Media tools are loading...\n');
+                await menu.prompt('Press Enter to continue...');
+                break;
+            case '3':
+                await menu.showNetworkMenu();
+                console.log('\n⏳ Network tools are loading...\n');
+                await menu.prompt('Press Enter to continue...');
+                break;
+            case '4':
+                await menu.showCryptoMenu();
+                console.log('\n⏳ Crypto tools are loading...\n');
+                await menu.prompt('Press Enter to continue...');
+                break;
+            case '5':
+                console.log('\n⏳ Automation engine is loading...\n');
+                await menu.prompt('Press Enter to continue...');
+                break;
+            case '6':
+                console.log('\n⚙️  Settings would go here\n');
+                await menu.prompt('Press Enter to continue...');
+                break;
+            case '7':
+                showHelp();
+                await menu.prompt('Press Enter to continue...');
+                break;
+            case '0':
+                console.log('\n👋 Goodbye!\n');
+                running = false;
+                break;
+            default:
+                console.log('\n❌ Invalid option\n');
+                await menu.prompt('Press Enter to continue...');
         }
-    } catch (error) {
-        console.log("⚠️ Error koneksi blockchain:", error.message);
-        console.log("Pastikan TOKEN_ADDRESS di .env file sudah benar.");
-        return false;
+    }
+
+    menu.close();
+}
+
+async function handleWhatsApp(menu) {
+    let whatsappRunning = true;
+
+    while (whatsappRunning) {
+        const choice = await menu.showWhatsAppMenu();
+
+        switch (choice) {
+            case '1':
+                await startWhatsAppServer(menu);
+                whatsappRunning = false;
+                break;
+            case '2':
+                const wallet = await menu.verifyLicense();
+                if (wallet) {
+                    console.log(`\n✅ Wallet set to: ${wallet.substring(0, 10)}...\n`);
+                    await menu.prompt('Press Enter to continue...');
+                } else {
+                    await menu.prompt('Press Enter to continue...');
+                }
+                break;
+            case '3':
+                console.log('\n📬 Queue status would display here\n');
+                await menu.prompt('Press Enter to continue...');
+                break;
+            case '4':
+                console.log('\n📨 Test message would be sent here\n');
+                await menu.prompt('Press Enter to continue...');
+                break;
+            case '0':
+                whatsappRunning = false;
+                break;
+            default:
+                console.log('\n❌ Invalid option\n');
+                await menu.prompt('Press Enter to continue...');
+        }
     }
 }
 
-// FUNGSI 2: Menjalankan Bot WA
-function startBot(userWallet) {
-    console.log("\n[2/3] Menyiapkan WhatsApp Client...");
-    console.log("(Ini mungkin butuh waktu 30-60 detik di pertama kali)\n");
-    
-    const client = new Client({
-        authStrategy: new LocalAuth({
-            clientId: "wag-tool-client"
-        }),
-        puppeteer: { 
-            headless: true, 
-            args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            executablePath: undefined
-        }
-    });
+async function startWhatsAppServer(menu) {
+    const wallet = await menu.verifyLicense();
+    if (!wallet) {
+        console.log('\n❌ Cannot start without valid license\n');
+        await menu.prompt('Press Enter to continue...');
+        return;
+    }
 
-    client.on('qr', (qr) => {
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log('[3/3] Scan QR Code ini dengan WhatsApp Anda:');
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-        qrcode.generate(qr, { small: true });
-        console.log('\n(QR Code akan berubah dalam 10-15 detik. Scan dengan cepat!)');
-    });
+    const portInput = await menu.prompt('\nEnter port (default 3000): ');
+    const port = portInput ? parseInt(portInput) : 3000;
 
-    client.on('ready', () => {
-        console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log('✅ CLIENT WHATSAPP SIAP!');
-        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        console.log(`Wallet: ${userWallet}`);
-        console.log('Status: Running');
-        console.log('Jangan tutup jendela ini.\n');
-        console.log('Command tersedia:');
-        console.log('  - !ping        : Test bot (reply: pong)');
-        console.log('  - !help        : Lihat bantuan');
-        console.log('  - Ctrl+C       : Stop bot\n');
-    });
+    const whatsapp = new WhatsAppModule();
+    console.log('\n🚀 Starting WhatsApp Gateway Server...\n');
 
-    client.on('authenticated', () => {
-        console.log('✅ Authenticated dengan WhatsApp');
-    });
-
-    // Contoh Fitur Sederhana
-    client.on('message', msg => {
-        if (msg.body === '!ping') {
-            msg.reply('🏓 pong - WAG Tool Active');
-        }
-        if (msg.body === '!help') {
-            msg.reply('WAG Tool Commands:\n!ping - Test bot\n!wallet - Show wallet info');
-        }
-        if (msg.body === '!wallet') {
-            msg.reply(`💼 Wallet Anda: ${userWallet}`);
-        }
-    });
-
-    client.on('disconnected', (reason) => {
-        console.log('\n⚠️ WhatsApp disconnected:', reason);
-        console.log('Closing application...');
-        process.exit(0);
-    });
-
-    client.initialize();
+    try {
+        await whatsapp.start(port, wallet);
+        console.log('ℹ️  Press Ctrl+C to stop the server');
+        await new Promise(() => {}); // Keep running
+    } catch (error) {
+        console.error('\n❌ Error starting server:', error.message);
+        await menu.prompt('Press Enter to continue...');
+    }
 }
 
-// --- LOGIKA UTAMA (MAIN LOOP) ---
-// Support command line argument: node app.js 0x...
-const argWallet = process.argv[2];
+function showHelp() {
+    console.clear();
+    console.log('╔════════════════════════════════════════════════════════╗');
+    console.log('║           📖 WAG LOCAL CLOUD - HELP & DOCS            ║');
+    console.log('╚════════════════════════════════════════════════════════╝\n');
 
-if (argWallet) {
-    // Direct execution dengan argument
-    (async () => {
-        const wallet = argWallet.trim();
-        
-        if (!ethers.isAddress(wallet)) {
-            console.log("❌ Alamat wallet tidak valid!");
-            console.log("Contoh format: 0x742d35Cc6634C0532925a3b844Bc9e7595f42bE0");
-            process.exit(1);
-        }
+    console.log('🎯 QUICK START:\n');
+    console.log('1. WhatsApp Gateway: Requires Polygon wallet with WAG tokens');
+    console.log('2. Media Tools: Resize, compress, optimize images & videos');
+    console.log('3. Network Tools: Monitor, tunnel, and test APIs');
+    console.log('4. Crypto Tools: Wallet & blockchain utilities');
+    console.log('5. Automation: Create workflows (Zapier-like)\n');
 
-        console.log(`\nWallet: ${wallet}`);
-        
-        const isAllowed = await checkLicense(wallet);
+    console.log('📚 DOCUMENTATION:\n');
+    console.log('  GitHub: https://github.com/santz1994/WAG');
+    console.log('  Docs: /docs folder in project\n');
 
-        if (isAllowed) {
-            startBot(wallet);
-        } else {
-            console.log("\n❌ Akses ditolak. Menutup aplikasi dalam 5 detik...");
-            setTimeout(() => process.exit(1), 5000);
-        }
-    })();
-} else {
-    // Interactive mode
-    rl.question('Masukkan Alamat Wallet Polygon Anda (0x...): ', async (wallet) => {
-        wallet = wallet.trim();
-        
-        if (!ethers.isAddress(wallet)) {
-            console.log("❌ Alamat wallet tidak valid!");
-            console.log("Contoh format: 0x742d35Cc6634C0532925a3b844Bc9e7595f42bE0");
-            process.exit(1);
-        }
-
-        console.log(`\nWallet: ${wallet}`);
-        
-        const isAllowed = await checkLicense(wallet);
-
-        if (isAllowed) {
-            startBot(wallet);
-        } else {
-            console.log("\n❌ Akses ditolak. Menutup aplikasi dalam 5 detik...");
-            setTimeout(() => process.exit(1), 5000);
-        }
-        rl.close();
-    });
+    console.log('💡 FEATURES:\n');
+    console.log('  ✅ All-in-one local cloud platform');
+    console.log('  ✅ No external API dependencies (privacy focused)');
+    console.log('  ✅ Modular: Add/remove tools as needed');
+    console.log('  ✅ Token-gated: License via blockchain\n');
 }
 
-// Handle Ctrl+C gracefully
+// Handle graceful shutdown
 process.on('SIGINT', () => {
-    console.log('\n\nApplications terminated by user.');
+    console.log('\n\n👋 Shutting down...');
     process.exit(0);
+});
+
+// Run main
+main().catch(error => {
+    console.error('Fatal error:', error);
+    process.exit(1);
 });

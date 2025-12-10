@@ -13,6 +13,61 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
+// --- LOGGING SYSTEM ---
+const LOG_FILE = path.join(__dirname, 'server.log');
+const MAX_LOG_SIZE = 10 * 1024 * 1024; // 10MB before rotation
+
+function rotateLogIfNeeded() {
+    try {
+        if (fs.existsSync(LOG_FILE)) {
+            const stats = fs.statSync(LOG_FILE);
+            if (stats.size > MAX_LOG_SIZE) {
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                const backupFile = `${LOG_FILE}.${timestamp}`;
+                fs.renameSync(LOG_FILE, backupFile);
+                console.log(`📁 Log rotated to: ${backupFile}`);
+            }
+        }
+    } catch (error) {
+        console.error('Error rotating log:', error.message);
+    }
+}
+
+function writeLog(level, message) {
+    const timestamp = new Date().toISOString();
+    const logEntry = `[${timestamp}] [${level}] ${message}\n`;
+    
+    try {
+        rotateLogIfNeeded();
+        fs.appendFileSync(LOG_FILE, logEntry);
+    } catch (error) {
+        console.error('Error writing to log file:', error.message);
+    }
+}
+
+// Override console methods
+const originalLog = console.log;
+const originalError = console.error;
+const originalWarn = console.warn;
+
+console.log = function(...args) {
+    const message = args.join(' ');
+    originalLog(...args);
+    writeLog('INFO', message);
+};
+
+console.error = function(...args) {
+    const message = args.join(' ');
+    originalError(...args);
+    writeLog('ERROR', message);
+};
+
+console.warn = function(...args) {
+    const message = args.join(' ');
+    originalWarn(...args);
+    writeLog('WARN', message);
+};
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -99,6 +154,7 @@ client.on('ready', () => {
     console.log('\n✅ WhatsApp Client SIAP!');
     console.log('🚀 WAG API Gateway berjalan...\n');
     isClientReady = true;
+    reconnectAttempts = 0; // Reset reconnection counter on success
     
     // Load persisted queue dan process
     loadQueueFromDisk();
@@ -113,9 +169,35 @@ client.on('auth_failure', msg => {
     process.exit(1);
 });
 
+// --- AUTO-RECONNECTION STRATEGY ---
+let reconnectAttempts = 0;
+const MAX_RECONNECT_ATTEMPTS = 5;
+const RECONNECT_DELAY = 5000; // 5 seconds
+
 client.on('disconnected', (reason) => {
-    console.log('⚠️ WhatsApp Disconnected:', reason);
+    console.warn('⚠️ WhatsApp Disconnected:', reason);
     isClientReady = false;
+    
+    // Auto-reconnect logic
+    if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+        reconnectAttempts++;
+        console.log(`🔄 Attempting reconnection (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
+        console.log(`⏰ Retrying in ${RECONNECT_DELAY / 1000} seconds...`);
+        
+        setTimeout(() => {
+            console.log('🔄 Reconnecting to WhatsApp...');
+            try {
+                client.initialize();
+            } catch (error) {
+                console.error('❌ Reconnection failed:', error.message);
+            }
+        }, RECONNECT_DELAY);
+    } else {
+        console.error('❌ Max reconnection attempts reached. Manual intervention required.');
+        console.error('💡 Try restarting the server or checking your internet connection.');
+        // Don't exit - keep server running to allow manual restart
+        reconnectAttempts = 0; // Reset counter for next attempt
+    }
 });
 
 // --- QUEUE PROCESSOR ---
