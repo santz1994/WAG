@@ -52,10 +52,12 @@
     "qrcode": "^1.5.4",
     "qrcode-terminal": "^0.12.0",
     "sharp": "^0.34.5",
+    "sss-wasm": "^0.4.0",
     "tls": "^0.0.1",
     "web3-utils": "^4.3.3",
     "whatsapp-web.js": "^1.26.1",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "pkg": "^5.8.1"
