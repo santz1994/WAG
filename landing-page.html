@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAG Tool - WhatsApp Gateway API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 20px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header .subtitle {
+            font-size: 1.5rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        header .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-section {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 50px;
+        }
+
+        .hero-section h2 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .feature {
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .feature h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .feature p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .price-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .price-section h3 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .price-section .amount {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .price-section p {
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .steps {
+            background: white;
+            padding: 60px;
+            border-radius: 20px;
+            margin-bottom: 50px;
+        }
+
+        .steps h2 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .step-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .step-item {
+            text-align: center;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .step-item h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .step-item p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .faq {
+            background: #f8f9fa;
+            padding: 60px;
+            border-radius: 20px;
+            margin-bottom: 50px;
+        }
+
+        .faq h2 {
+            color: #667eea;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .faq-item {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .faq-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .faq-item p {
+            color: #666;
+            display: none;
+        }
+
+        .faq-item.active p {
+            display: block;
+        }
+
+        footer {
+            background: rgba(0,0,0,0.2);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 60px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .hero-section {
+                padding: 30px;
+            }
+
+            .hero-section h2 {
+                font-size: 1.8rem;
+            }
+
+            .price-section .amount {
+                font-size: 2rem;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="badge">🚀 Micro-SaaS Self-Hosted</div>
+            <h1>WAG Tool</h1>
+            <p class="subtitle">WhatsApp Gateway API - Tanpa Langganan Bulanan</p>
+        </header>
+
+        <section class="hero-section">
+            <h2>Ubah WhatsApp Jadi API Gateway</h2>
+            <p style="font-size: 1.1rem; color: #666; margin-bottom: 20px;">
+                Kirim pesan otomatis, blast, OTP, dan notifikasi langsung dari WhatsApp Anda. 
+                Software berjalan di laptop Anda - tidak perlu server mahal.
+            </p>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Akses Seumur Hidup</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Biaya Langganan</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Kontrol Data</div>
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="feature">
+                    <h3>✅ Hold-to-Access</h3>
+                    <p>Cukup hold 1,000 token di wallet Anda. Tidak perlu bayar setiap bulan.</p>
+                </div>
+                <div class="feature">
+                    <h3>🔒 Blockchain-Powered</h3>
+                    <p>Lisensi terverifikasi via blockchain. Tidak bisa dipalsukan atau di-hack.</p>
+                </div>
+                <div class="feature">
+                    <h3>🏠 Self-Hosted</h3>
+                    <p>Software berjalan 100% di laptop Anda. Data tetap milik Anda.</p>
+                </div>
+                <div class="feature">
+                    <h3>⚡ Instant Setup</h3>
+                    <p>Download, scan QR WhatsApp, done. API langsung ready dalam 2 menit.</p>
+                </div>
+                <div class="feature">
+                    <h3>💰 Investasi Aman</h3>
+                    <p>Token Anda bisa di-trade. Nilai bisa naik seiring pertumbuhan komunitas.</p>
+                </div>
+                <div class="feature">
+                    <h3>🎯 Use Cases</h3>
+                    <p>OTP, Notifikasi, Blast, Reminder, Customer Support, dan banyak lagi.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="price-section">
+            <h3>Model Lisensi Unik</h3>
+            <p>Tidak Ada Biaya Berulang</p>
+            <div class="amount">Hold 1,000 $WAG</div>
+            <p>Itu saja. Selamanya.</p>
+            <div class="buttons">
+                <a href="https://quickswap.exchange/#/swap?outputCurrency=YOUR_CONTRACT_ADDRESS" 
+                   class="btn btn-primary" target="_blank">
+                    🔗 Beli Token di QuickSwap
+                </a>
+                <a href="#download" class="btn btn-secondary">
+                    📥 Download Software
+                </a>
+            </div>
+        </section>
+
+        <section class="steps">
+            <h2>Cara Memulai Hanya 4 Langkah</h2>
+            <div class="step-items">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <h3>Beli Token</h3>
+                    <p>Beli 1,000 token $WAG di QuickSwap atau Uniswap</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <h3>Download</h3>
+                    <p>Download software WAG Tool (file .exe)</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <h3>Masukkan Wallet</h3>
+                    <p>Input alamat wallet Anda yang punya token</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <h3>Scan QR</h3>
+                    <p>Scan QR code dengan WhatsApp - API siap dipakai!</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq">
+            <h2>Pertanyaan Umum</h2>
+            
+            <div class="faq-item active">
+                <h4>🤔 Apakah saya perlu membayar setiap bulan?</h4>
+                <p>Tidak! Anda hanya perlu hold 1,000 token sekali saja. Tidak ada biaya berulang. Semakin lama Anda hold, semakin banyak value yang Anda dapatkan jika token naik.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>🔒 Apakah data saya aman?</h4>
+                <p>100% aman. Software berjalan 100% di laptop Anda. Kami tidak punya akses ke data atau session WhatsApp Anda. Semuanya encrypted dan tersimpan lokal.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>💎 Bagaimana jika saya jual token saya?</h4>
+                <p>Jika Anda jual token dan saldo turun di bawah 1,000, software tidak bisa dijalankan lagi. Tapi Anda bisa membeli ulang kapan saja.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>⛓️ Apa itu blockchain? Apakah rumit?</h4>
+                <p>Blockchain adalah database terdesentralisasi. Untuk user, itu sederhana: wallet = rekening bank, token = uang digital. Tidak perlu pahami teknikinya untuk pakai software kami.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>📱 Apakah WhatsApp saya bisa ter-ban?</h4>
+                <p>Kami memakai official WhatsApp library. Selama Anda tidak abuse (spam besar-besaran), aman. Banyak user yang sudah pakai untuk notifikasi harian tanpa masalah.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>💻 Apa sistem requirement?</h4>
+                <p>Windows 10+ atau macOS/Linux. RAM minimal 2GB. Internet connection stabil. Hanya itu. Bahkan bisa jalan di laptop lama.</p>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 WAG Tool. Dibangun dengan ❤️ untuk masa depan yang terdesentralisasi.</p>
+            <p style="margin-top: 20px; opacity: 0.8;">
+                Bukan financial advice. Token adalah instrument spekulatif. Investasi dengan bijak.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        document.querySelectorAll('.faq-item h4').forEach(header => {
+            header.addEventListener('click', function() {
+                const parent = this.parentElement;
+                parent.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

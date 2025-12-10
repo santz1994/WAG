@@ -1,0 +1,17 @@
+node_modules/
+.env
+.env.local
+.env.*.local
+dist/
+build/
+.DS_Store
+*.log
+.vscode/
+.idea/
+*.swp
+*.swo
+.wechat-sessions/
+wag-tool.exe
+pkg-cache/
+.wwebjs_auth/
+.wwebjs_cache/
