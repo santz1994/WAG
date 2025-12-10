@@ -1,322 +1,293 @@
-# WAG Tool - WhatsApp Gateway Token Gated Software
+# WAG Tool - WhatsApp Gateway with Free & Premium Tiers
 
 > **Version: 3.0.0** | **Status:** ✅ **PRODUCTION READY** | **50/50 Tools Complete (100%)**
+> 
+> **🎁 FREE forever OR ⭐ PREMIUM for unlimited**
 
 ## 🚀 Apa Itu WAG Tool?
 
-WAG Tool adalah Micro-SaaS self-hosted yang mengubah WhatsApp pribadi menjadi API gateway dengan 50 production-ready tools. User hanya perlu memegang 1,000 token $WAG untuk akses seumur hidup - tanpa biaya langganan bulanan.
+WAG Tool adalah Micro-SaaS self-hosted yang mengubah WhatsApp pribadi menjadi API gateway dengan 50 production-ready tools. Tersedia dalam 3 paket:
+
+- **🎁 FREE** - Untuk individu (100 req/hari, 13 tools, gratis selamanya)
+- **⭐ PREMIUM** - Untuk profesional ($99/bulan, 50 tools, unlimited requests)
+- **🏢 ENTERPRISE** - Custom pricing untuk organisasi besar
 
 ### Fitur Utama:
-- ✅ Self-hosted (software berjalan di laptop user)
-- ✅ Token-gated access (hold 1,000 WAG = akses permanent)
-- ✅ WhatsApp integration (QR code based authentication)
-- ✅ Blockchain verification (live saldo check via Polygon)
+- ✅ **50 Production-Ready Tools** - Lengkap dari WhatsApp hingga system tools
+- ✅ **Self-hosted** - Berjalan di laptop, kontrol penuh data
+- ✅ **Flexible Pricing** - FREE forever atau upgrade ke PREMIUM
+- ✅ **API Key Management** - Multiple keys per user
+- ✅ **Usage Tracking** - Monitor penggunaan real-time
+- ✅ **Easy Upgrade** - Via crypto (USDT) atau card (Stripe)
+- ✅ **WhatsApp Integration** - QR code authentication
+- ✅ **Tier-Based Access** - Features unlock saat upgrade
+
+---
+
+## 💰 Comparison: FREE vs PREMIUM vs ENTERPRISE
+
+| Feature | FREE | PREMIUM | ENTERPRISE |
+|---------|------|---------|-----------|
+| **Harga** | 🎁 Gratis | $99/mo | Custom |
+| **Tools** | 13 tools | 50 tools | 50+ custom |
+| **API Keys** | 1 | 50 | Unlimited |
+| **Daily Requests** | 100 | 100,000 | Unlimited |
+| **Monthly Requests** | 2,000 | 3,000,000 | Unlimited |
+| **Priority Support** | ❌ | ✅ | ✅ Dedicated |
+| **Custom Domain** | ❌ | ✅ | ✅ |
+| **Analytics** | ❌ | ✅ | ✅ |
+| **Webhooks** | ❌ | ✅ | ✅ |
+| **SSO** | ❌ | ✅ | ✅ |
+
+### What's Included in Each Tier:
+
+**FREE Tier (13 Tools)**:
+```
+✅ check-license         (License verification)
+✅ text-to-speech       (Limited 100 chars/day)
+✅ greeting-card        (Card generator)
+✅ pdf-merge            (Up to 5 pages/day)
+✅ api-documentation    (API docs)
+✅ code-snippet-storage (Store code)
+✅ weather-app          (Basic info)
+✅ user-profile         (Profile manager)
+✅ settings-manager     (Settings sync)
+✅ changelog-generator  (Auto changelog)
+✅ logo-generator       (Basic logos)
+✅ todo-manager         (Todo app)
+✅ notification-center  (Notifications)
+```
+
+**PREMIUM Tier (ALL 50 Tools)**:
+```
+✅ EVERYTHING in FREE +
+✅ Full WhatsApp Gateway (unlimited)
+✅ Advanced AI Tools (TTS unlimited)
+✅ Document Processing (full access)
+✅ Crypto & Blockchain (all tools)
+✅ Security & Privacy (all tools)
+✅ System Management (all tools)
+✅ And 30+ more professional tools!
+```
 
 ---
 
 ## 📋 Prerequisites
 
-Sebelum mulai, pastikan punya:
+Sebelum mulai:
 
 1. **Node.js** v16+ ([Download](https://nodejs.org/))
-2. **MetaMask Wallet** ([Download](https://metamask.io/))
-3. **Polygon Network** di MetaMask (sudah default)
-4. **Polygon Tokens** (minimal 0.1 MATIC untuk gas fee)
-5. **WhatsApp Account** (personal/business)
+2. **Wallet** (MetaMask, Phantom, atau apapun yang support Web3)
+3. **WhatsApp Account** (personal atau business)
+4. **Internet Connection** yang stabil
 
 ---
 
-## 🔧 Langkah 1: Deploy Smart Contract (Token)
+## 🎯 Quick Start: 5 Menit
 
-### 1.1 Buka Remix IDE
+### Step 1: Register User
+
+```bash
+# Register dengan wallet Anda
+curl -X POST http://localhost:3000/api/tier/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "wallet": "0x742d35Cc6634C0532925a3b844Bc9e7595f42bE0",
+    "metadata": {
+      "email": "user@example.com",
+      "name": "Your Name"
+    }
+  }'
 ```
-Buka browser, pergi ke: https://remix.ethereum.org
+
+**Response**: User terdaftar dengan FREE tier 🎁
+
+### Step 2: Generate API Key
+
+```bash
+curl -X POST http://localhost:3000/api/keys/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "wallet": "0x742d35Cc6634C0532925a3b844Bc9e7595f42bE0",
+    "name": "My First Key"
+  }'
 ```
 
-### 1.2 Create File Baru
-- Klik menu di sebelah kiri
-- Buat file baru: `WAGToken.sol`
-- Copy-paste isi dari `WAGToken.sol` di folder ini
+**Response**: Dapatkan API key untuk akses tools
 
-### 1.3 Compile Contract
-- Tab `Solidity Compiler` (kiri)
-- Pilih Compiler: `0.8.x` (atau lebih baru)
-- Klik `Compile WAGToken.sol`
-- Tunggu sampai compile success ✅
+### Step 3: Use Tools (Free Tier)
 
-### 1.4 Deploy ke Polygon Amoy Testnet
-- Tab `Deploy & Run Transactions`
-- Environment: Pilih `Injected Provider - MetaMask`
-- Network di MetaMask harus: **Polygon Amoy** (Chain ID: 80002)
-- Contract: Pilih `WAGToken`
-- Klik tombol `Deploy`
-- Confirm di MetaMask popup
-- **Tunggu konfirmasi blockchain** (±30 detik)
-
-### 1.5 Catat Contract Address
-Setelah deploy sukses, akan ada contract address muncul di bawah:
+```bash
+# Use text-to-speech tool (FREE tier)
+curl -X POST http://localhost:3000/tools/text-to-speech \
+  -H "Authorization: Bearer wag_xxxxxxxxxxxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Hello World",
+    "language": "id"
+  }'
 ```
-0x742d35Cc6634C0532925a3b844Bc9e7595f42bE0
+
+### Step 4: Check Usage
+
+```bash
+curl http://localhost:3000/api/tier/0x742d35Cc6634C0532925a3b844Bc9e7595f42bE0/usage
 ```
-⚠️ **COPY ADDRESS INI!** Anda butuhnya untuk langkah berikutnya.
+
+**Response**: Lihat berapa banyak yang sudah dipakai dari quota
+
+### Step 5: Upgrade ke PREMIUM (Optional)
+
+```bash
+# Upgrade untuk akses unlimited
+curl -X POST http://localhost:3000/api/tier/0x742d35Cc6634C0532925a3b844Bc9e7595f42bE0/upgrade-to-premium \
+  -H "Content-Type: application/json" \
+  -d '{
+    "duration": 30,
+    "paymentMethod": "crypto",
+    "txHash": "0x1234567890abcdef..."
+  }'
+```
+
+✅ Selesai! Sekarang Anda punya akses ke 50 tools!
 
 ---
 
-## ⚙️ Langkah 2: Setup Configuration
+## 🔧 Installation
 
-### 2.1 Edit File `.env`
-Buka file `.env` di folder `wag-app/`, edit seperti ini:
+```bash
+# Clone repo
+git clone https://github.com/santz1994/WAG.git
+cd WAG/wag-app
 
-```env
-# Paste contract address dari Remix
-TOKEN_ADDRESS=0x4e928F638cFD2F1c75437A41E2d386df79eeE680
-
-# Minimal holding
-MIN_HOLDING=1000
-
-# RPC URL (gunakan yang sudah terbukti working)
-RPC_URL=https://rpc-amoy.polygon.technology
-```
-
-### 2.2 Verifikasi
-- Pastikan format address: `0x` + 40 karakter hexadecimal
-- Pastikan TOKEN_ADDRESS sesuai dengan contract yang di-deploy di Amoy
-- Pastikan MIN_HOLDING adalah angka bulat
-- Pastikan RPC_URL: `https://rpc-amoy.polygon.technology` (untuk testnet)
-- Save file `.env`
-
----
-
-## 📦 Langkah 3: Install Dependencies
-
-Buka terminal/PowerShell di folder `wag-app/`, jalankan:
-
-```powershell
+# Install dependencies
 npm install
-```
 
-Ini akan download semua dependencies yang dibutuhkan. Tunggu 2-5 menit.
+# Setup .env
+cp .env.example .env
+# Edit .env sesuai kebutuhan
 
----
-
-## 🧪 Langkah 4: Test Aplikasi
-
-### 4.1 Jalankan Aplikasi
-
-```powershell
+# Start server
 npm start
 ```
 
-Output yang keluar:
-```
-==========================================
-   WAG TOOL - TOKEN GATED SOFTWARE v1.0   
-==========================================
-
-Masukkan Alamat Wallet Polygon Anda (0x...): 
-```
-
-### 4.2 Input Wallet Address
-Masukkan address wallet Anda (yang punya token):
-```
-0x742d35Cc6634C0532925a3b844Bc9e7595f42bE0
-```
-
-### 4.3 Cek Lisensi
-App akan:
-1. Connect ke Polygon blockchain
-2. Check saldo token Anda
-3. Jika >= 1,000 WAG → ✅ Lanjut
-4. Jika < 1,000 WAG → ❌ Exit
-
-### 4.4 Scan QR Code
-Jika lisensi valid, muncul QR code:
-```
-┌─────────────────┐
-│ ██ ▀▄▀█ ██ ▀▄▀ │
-│ ▀▀ █▀█ ▀▀ █▀█ │
-└─────────────────┘
-```
-
-Ambil hp Anda:
-1. Buka WhatsApp
-2. Buka Settings → Linked Devices
-3. Scan QR code di terminal
-4. Confirm di hp
-
-### 4.5 Bot Aktif
-Setelah scan berhasil:
-```
-✅ CLIENT WHATSAPP SIAP!
-Wallet: 0x742d35Cc6634C0532925a3b844Bc9e7595f42bE0
-Status: Running
-```
-
-Bot siap! Test dengan kirim pesan `!ping` ke WhatsApp pribadi Anda.
+Server akan berjalan di `http://localhost:3000`
 
 ---
 
-## 🎯 Fitur Bot (Demo)
+## 💳 Payment & Upgrade
 
-Saat ini tersedia:
-- `!ping` → Bot reply: `pong - WAG Tool Active`
-- `!help` → Show bantuan
-- `!wallet` → Show wallet info
+### Upgrade via Crypto (USDT on Polygon)
 
-Anda bisa extend fitur ini di dalam function `client.on('message', ...)` di `app.js`.
+```bash
+# 1. Get upgrade quote
+curl -X POST http://localhost:3000/api/tier/0x.../get-upgrade-quote \
+  -d '{"duration": 30}'
 
----
+# 2. Send USDT to payment address (shown in quote)
 
-## 📦 Langkah 5: Package ke .EXE (Optional)
+# 3. Verify payment
+curl -X POST http://localhost:3000/api/tier/0x.../validate-payment \
+  -d '{"txHash": "0x...", "chainId": 137}'
 
-Untuk distribusi ke user tanpa Node.js installed:
-
-### 5.1 Install PKG Global
-```powershell
-npm install -g pkg
+# 4. Upgrade confirmed! Premium access unlocked ✅
 ```
 
-### 5.2 Compile ke .EXE
-```powershell
-npm run pkg
+### Upgrade via Card (Stripe)
+
+```bash
+# Coming soon - Subscribe via Stripe dashboard
 ```
 
-Hasilnya: `wag-tool.exe` di folder `wag-app/`
-
-### 5.3 Distribusikan
-- Pindahkan `.exe` ke user
-- User bisa langsung run tanpa install Node.js
-- Kode Anda tersembunyi (di-compile)
-
 ---
 
-## 🔒 Keamanan
+## 📊 Tier Management API
 
-### Blockchain Level:
-- Smart contract di-verify di blockchain
-- Saldo real-time, tidak bisa dipalsukan
-- Token non-custodial (user kontrol private key)
-
-### Application Level:
-- Kode di-compile ke .EXE (tidak bisa dibaca)
-- Setiap run, check ulang saldo
-- WhatsApp session encrypted locally
-
-### Tips Tambahan:
-- Jangan share private key Anda
-- Gunakan official MetaMask saja
-- Verify contract di PolygonScan sebelum deploy
-
----
-
-## 🛠️ Troubleshooting
-
-### Error: "Cannot find module 'whatsapp-web.js'"
-```powershell
-npm install
-```
-Jalankan ulang.
-
-### Error: "Connection blockchain failed"
-1. Cek TOKEN_ADDRESS di `.env` (valid address?)
-2. Cek RPC_URL bisa diakses
-3. Cek internet connection
-
-### WhatsApp: "Scan failed / QR expired"
-- Scan harus dalam 10-15 detik
-- Jika timeout, app restart dan scan ulang
-- Pastikan WhatsApp settings sudah aktif untuk "Linked Devices"
-
-### "Access denied - hold less than 1000 WAG"
-- Wallet Anda memang kurang token
-- Beli token di QuickSwap/Uniswap dulu
-- Atau setup dummy wallet dengan banyak token untuk testing
-
----
-
-## 💡 Development Tips
-
-### Menambah Fitur Bot:
-Edit bagian ini di `app.js`:
-
-```javascript
-client.on('message', msg => {
-    if (msg.body === '!ping') {
-        msg.reply('🏓 pong');
-    }
-    // Tambah command baru di sini
-    if (msg.body === '!mycommand') {
-        msg.reply('Response di sini');
-    }
-});
+### Check Current Tier
+```bash
+GET /api/tier/:wallet
 ```
 
-### Ubah Minimum Holding:
-Edit `.env`:
-```env
-MIN_HOLDING=500  # Ubah dari 1000 menjadi 500
+### List All Tiers
+```bash
+GET /api/tier/comparison
 ```
 
-### Deploy di Server (Advanced):
-Untuk truly production, Anda bisa host di cloud:
-- Railway, Render, Heroku, AWS
-- Pastikan security: environment variables jangan hardcoded
+### Check Tool Access
+```bash
+POST /api/tier/check-access
+Body: {"wallet": "0x...", "toolName": "text-to-speech"}
+```
+
+### View Usage Stats
+```bash
+GET /api/tier/:wallet/usage
+```
+
+### Upgrade to Premium
+```bash
+POST /api/tier/:wallet/upgrade-to-premium
+Body: {"duration": 30, "paymentMethod": "crypto"}
+```
+
+### Downgrade to Free
+```bash
+POST /api/tier/:wallet/downgrade-to-free
+```
 
 ---
 
-## 📈 Business Model
+## 🔐 Security & Data
 
-### Revenue Flow:
-1. **User buys token** → Harga token naik
-2. **User holds token** → Value appreciation
-3. **You sell small % over time** → Passive income
-
-### Marketing:
-Create landing page dengan link:
-- 🔗 "Buy $WAG" → QuickSwap/Uniswap
-- 📥 "Download WAG Tool" → GitHub Release / Website
-
-Template HTML sudah di: `landing-page.html`
+- **Self-Hosted** - Semuanya berjalan di komputer Anda
+- **No Data Collection** - Kami tidak menyimpan data pribadi Anda
+- **Wallet Based** - Akun teridentifikasi by wallet, tidak perlu email
+- **API Keys** - SHA-256 encrypted, tidak reversible
+- **Tier Verification** - Blockchain timestamp, tidak bisa dipalsukan
 
 ---
 
-## 📞 Support
+## ❓ FAQ
 
-Jika ada issue:
-1. Check terminal output (error message biasanya clear)
-2. Google error message + "whatsapp-web.js" / "ethers.js"
-3. Check GitHub issues di library yang digunakan
+### Q: Apakah FREE tier benar-benar gratis?
+A: Ya! Selamanya gratis. Upgrade ke PREMIUM jika butuh lebih banyak tools/requests.
+
+### Q: Apa beda self-hosted vs SaaS?
+A: Self-hosted = berjalan di laptop Anda. Data tidak dikirim ke server pihak ketiga.
+
+### Q: Bisakah saya downgrade dari PREMIUM ke FREE?
+A: Ya, kapan saja. Akan kehilangan akses premium tools tetapi data tetap aman.
+
+### Q: Berapa lama subscription PREMIUM?
+A: Tersedia monthly, quarterly, atau yearly. Anda bisa downgrade kapan saja.
+
+### Q: Apakah bisa deploy di server?
+A: Ya! WAG Tool bisa di-deploy di VPS, AWS, Digital Ocean, atau server apapun.
+
+---
+
+## 📚 Full Documentation
+
+Lihat folder `/docs` untuk dokumentasi lengkap:
+- **[Quick Start](./docs/QUICK_START.md)** - Mulai cepat
+- **[API Reference](./docs/api/API.md)** - Semua endpoints
+- **[Tools Roadmap](./docs/TOOLS_ROADMAP.md)** - Daftar semua tools
+- **[Architecture](./docs/ARCHITECTURE.md)** - System design
+
+---
+
+## 🤝 Support
+
+- **Documentation**: Check `/docs` folder
+- **Issues**: GitHub Issues
+- **Email**: support@wagtool.io
 
 ---
 
 ## 📄 License
 
-MIT License - Anda bebas modify dan distribute.
+MIT License - Anda bebas menggunakan, modify, dan distribute
 
 ---
 
-## 📚 Documentation
-
-Semua dokumentasi terorganisir di folder `/docs` dengan max 3 files per kategori:
-
-**👉 [Lihat Documentation Index](./docs/INDEX.md)**
-
-### Quick Links:
-- **[Quick Start](./docs/QUICK_START.md)** - Mulai dalam 2 menit
-- **[Tools Roadmap](./docs/TOOLS_ROADMAP.md)** - 50+ tools planned
-- **[Architecture](./docs/ARCHITECTURE.md)** - System design
-- **[API Reference](./docs/api/API.md)** - REST endpoints
-
----
-
-Anda sekarang punya MVP Micro-SaaS yang:
-- ✅ Blockchain-powered licensing
-- ✅ Self-hosted (user punya data)
-- ✅ Recurring revenue (token appreciation)
-- ✅ Low maintenance (no server costs)
-
-Next step: Marketing & user acquisition!
-
----
-
-**Created with ❤️ for decentralized future**
+**Made with ❤️ by Daniel Rizaldy**
